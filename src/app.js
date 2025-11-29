@@ -1,28 +1,21 @@
 import express from "express";
-import cors from "cors";
-import jogosRoutes from "./routes/jogosRoutes.js";
 import path from "path";
 import { fileURLToPath } from "url";
+import jogosRoutes from "./src/routes/games.js"; // ajuste conforme seu nome real
 
 const app = express();
-
-
-app.use(cors());
-app.use(express.json());
-
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-// Servir arquivos estáticos
-app.use(express.static(path.join(__dirname, "..", "public")));
+// public
+app.use(express.static(path.join(__dirname, "public")));
 
+app.use("/api/jogos", jogosRoutes);
 
 app.get("/", (req, res) => {
-  res.sendFile(path.join(__dirname, "..", "public", "index.html"));
+  res.sendFile(path.join(__dirname, "public", "index.html"));
 });
 
-
-app.use("/jogos", jogosRoutes);
-
-export default app;
+const port = process.env.PORT || 3000;
+app.listen(port, () => console.log("Rodando na porta", port));
