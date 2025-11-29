@@ -1,7 +1,7 @@
 import express from "express";
 import path from "path";
 import { fileURLToPath } from "url";
-import jogosRoutes from "./src/routes/games.js"; // ajuste conforme seu nome real
+import jogosRoutes from "./routes/games.js"; // ajuste conforme seu nome real
 
 const app = express();
 
@@ -18,4 +18,5 @@ app.get("/", (req, res) => {
 });
 
 const port = process.env.PORT || 3000;
+
 app.listen(port, () => console.log("Rodando na porta", port));
