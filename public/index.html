@@ -47,7 +47,9 @@ function show(data) {
 }
 
 async function createGame() {
-  const url = document.getElementById("baseUrl").value + "/games";
+  const base = document.getElementById("baseUrl").value;
+  const url = base + "/api/jogos";
+
   const body = {
     title: document.getElementById("title").value,
     platform: document.getElementById("platform").value,
@@ -65,19 +67,24 @@ async function createGame() {
 }
 
 async function getAll() {
-  const url = document.getElementById("baseUrl").value + "/games";
+  const base = document.getElementById("baseUrl").value;
+  const url = base + "/api/jogos";
+
   const res = await fetch(url);
   show(await res.json());
 }
 
 async function getById() {
-  const url = document.getElementById("baseUrl").value + "/games/" + document.getElementById("idGet").value;
+  const base = document.getElementById("baseUrl").value;
+  const url = base + "/api/jogos/" + document.getElementById("idGet").value;
+
   const res = await fetch(url);
   show(await res.json());
 }
 
 async function updateGame() {
-  const url = document.getElementById("baseUrl").value + "/games/" + document.getElementById("idUpdate").value;
+  const base = document.getElementById("baseUrl").value;
+  const url = base + "/api/jogos/" + document.getElementById("idUpdate").value;
 
   const body = {
     title: document.getElementById("title").value,
@@ -96,7 +103,9 @@ async function updateGame() {
 }
 
 async function deleteGame() {
-  const url = document.getElementById("baseUrl").value + "/games/" + document.getElementById("idDelete").value;
+  const base = document.getElementById("baseUrl").value;
+  const url = base + "/api/jogos/" + document.getElementById("idDelete").value;
+
   const res = await fetch(url, { method: "DELETE" });
   show(await res.json());
 }
