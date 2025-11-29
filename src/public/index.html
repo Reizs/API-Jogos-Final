@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Tester API Jogos</title>
+  <style>
+    body { font-family: Arial; padding: 20px; max-width: 700px; margin: auto; }
+    input, button { padding: 10px; margin: 5px 0; width: 100%; }
+    textarea { width: 100%; height: 150px; margin-top: 10px; }
+  </style>
+</head>
+<body>
+
+<h1>Teste da API de Jogos</h1>
+
+<label>URL da API:</label>
+<input id="baseUrl" value="https://SEU-DEPLOY.onrender.com">
+
+<h3>Criar jogo</h3>
+<input id="title" placeholder="Título do jogo">
+<input id="platform" placeholder="Plataforma (PC, PS5...)">
+<input id="hours" placeholder="Horas jogadas" type="number">
+<input id="finished" placeholder="Data de término (YYYY-MM-DD)">
+<button onclick="createGame()">Criar</button>
+
+<h3>Buscar todos</h3>
+<button onclick="getAll()">Listar jogos</button>
+
+<h3>Buscar por ID</h3>
+<input id="idGet" placeholder="ID do jogo">
+<button onclick="getById()">Buscar</button>
+
+<h3>Atualizar</h3>
+<input id="idUpdate" placeholder="ID para atualizar">
+<button onclick="updateGame()">Atualizar (usa os campos acima)</button>
+
+<h3>Deletar</h3>
+<input id="idDelete" placeholder="ID para deletar">
+<button onclick="deleteGame()">Remover</button>
+
+<h3>RESULTADO</h3>
+<textarea id="output" readonly></textarea>
+
+<script>
+function show(data) {
+  document.getElementById("output").value = JSON.stringify(data, null, 2);
+}
+
+async function createGame() {
+  const url = document.getElementById("baseUrl").value + "/games";
+  const body = {
+    title: document.getElementById("title").value,
+    platform: document.getElementById("platform").value,
+    hours_played: Number(document.getElementById("hours").value),
+    finished_at: document.getElementById("finished").value || null
+  };
+
+  const res = await fetch(url, {
+    method: "POST",
+    headers: {"Content-Type": "application/json"},
+    body: JSON.stringify(body)
+  });
+
+  show(await res.json());
+}
+
+async function getAll() {
+  const url = document.getElementById("baseUrl").value + "/games";
+  const res = await fetch(url);
+  show(await res.json());
+}
+
+async function getById() {
+  const url = document.getElementById("baseUrl").value + "/games/" + document.getElementById("idGet").value;
+  const res = await fetch(url);
+  show(await res.json());
+}
+
+async function updateGame() {
+  const url = document.getElementById("baseUrl").value + "/games/" + document.getElementById("idUpdate").value;
+
+  const body = {
+    title: document.getElementById("title").value,
+    platform: document.getElementById("platform").value,
+    hours_played: Number(document.getElementById("hours").value),
+    finished_at: document.getElementById("finished").value || null
+  };
+
+  const res = await fetch(url, {
+    method: "PUT",
+    headers: {"Content-Type": "application/json"},
+    body: JSON.stringify(body)
+  });
+
+  show(await res.json());
+}
+
+async function deleteGame() {
+  const url = document.getElementById("baseUrl").value + "/games/" + document.getElementById("idDelete").value;
+  const res = await fetch(url, { method: "DELETE" });
+  show(await res.json());
+}
+</script>
+
+</body>
+</html>
