@@ -1,18 +1,36 @@
-import express from "express";
-import path from "path";
-import { fileURLToPath } from "url";
-import jogosRoutes from "./src/routes/games.js";
+import { supabase } from '../services/supabase.js';
 
-const app = express();
+export async function list(req,res){
+  const { data, error } = await supabase.from('games').select('*');
+  if(error) return res.status(500).json({error:error.message});
+  return res.json(data);
+}
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+export async function get(req,res){
+  const { id } = req.params;
+  const { data, error } = await supabase.from('games').select('*').eq('id',id).single();
+  if(error) return res.status(404).json({error:'Jogo não encontrado'});
+  return res.json(data);
+}
 
-app.use(express.static(path.join(__dirname, "public")));
-app.use("/api/jogos", jogosRoutes);
+export async function create(req,res){
+  const { title, platform, hours_played, finished_at } = req.body;
+  if(!title || !platform) return res.status(400).json({error:"Campos obrigatórios faltando"});
+  const { data, error } = await supabase.from('games').insert([{title,platform,hours_played,finished_at}]).select();
+  if(error) return res.status(500).json({error:error.message});
+  return res.status(201).json(data[0]);
+}
 
-app.get("/", (req, res) => {
-  res.sendFile(path.join(__dirname, "public", "index.html"));
-});
+export async function update(req,res){
+  const { id } = req.params;
+  const body = req.body;
+  const { data, error } = await supabase.from('games').update(body).eq('id',id).select();
+  if(error) return res.status(404).json({error:'Erro ao atualizar'});
+  return res.json(data[0]);
+}
 
-export default app;
+export async function remove(req,res){
+  const { id } = req.params;
+  const { error } = await supabase.from('games').delete().eq('id',id);
+  if(error) return res.status(404).json({error:'Erro ao excluir'});
+  return res.json({message:'Jogo removido'});
